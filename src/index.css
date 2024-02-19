@@ -19,6 +19,21 @@ code {
     monospace;
 }
 
+.styled_scrollbar::-webkit-scrollbar {
+  width: 10px;
+}
+
+.styled_scrollbar::-webkit-scrollbar-track {
+  border-radius: 20px;
+  background-color: rgba(173, 173, 173, 0.2);
+}
+
+.styled_scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(173, 173, 173, 0.3);
+  border-radius: 20px;
+}
+
+
 .MuiSelect-icon, .MuiInputBase-root, .MuiFormLabel-root {
   color:inherit !important;
 }
