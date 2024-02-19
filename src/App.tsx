@@ -31,7 +31,7 @@ function App() {
           <Routes>
               <Route path={'/'} element={<Navigate to={'/games'}/>}/>
               <Route path={'/games'} element={<Games/>}/>
-              <Route path={'/games/:id'} element={<Game/>}/>
+              <Route path={'/games/:type/:id'} element={<Game/>}/>
           </Routes>
       </div>
   );

@@ -1,11 +1,18 @@
 import React from "react";
-// import TicTacToe from "../../../TicTacToe";
 import RockPaperScissors from "../../../components/RockPaperScissors";
+import TicTacToe from "../../../components/TicTacToe";
+import {useParams} from "react-router-dom";
 
 const Game = () => {
+    const game = useParams().type;
+
     return (
-        <div className={'bg-amber-300 relative w-full flex grow justify-center items-center'}>
-            {/*<TicTacToe />*/}
+        <div className={'relative w-full flex grow justify-center items-center'}>
+            {
+                game === 'TicTacToe'
+                ? <TicTacToe />
+                :  <RockPaperScissors />
+            }
         </div>
     )
 }

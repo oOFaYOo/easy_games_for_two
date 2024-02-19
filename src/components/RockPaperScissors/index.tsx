@@ -1,13 +1,35 @@
 import React, {useState} from "react";
+import {useSelector} from "react-redux";
+import {RootState} from "../../store";
+import StoneImage from "./free-icon-fist-1527443.png";
+import PaperImage from "./free-icon-palm-4866399.png";
+import ScissorsImage from "./free-icon-victory-735804.png";
+import {Button} from "@mui/material";
 
 const RockPaperScissors = () => {
+    const {theme} = useSelector((state: RootState) => state.Task7Store);
     const [stepOne, setStepOne] = useState<string>('');
     const [stepTwo, setStepTwo] = useState<string>('');
     const [winner, setWinner] = useState<string>('');
 
-    function getWinner (step1:string, step2:string) {
-        if(step1 === 'stone'){
-            switch (step2){
+    const actions = [
+        {
+            name: 'stone',
+            img: StoneImage,
+        },
+        {
+            name: 'scissors',
+            img: ScissorsImage,
+        },
+        {
+            name: 'paper',
+            img: PaperImage,
+        },
+    ];
+
+    function getWinner(step1: string, step2: string) {
+        if (step1 === 'stone') {
+            switch (step2) {
                 case 'stone':
                     return 'draw';
                 case 'scissors':
@@ -16,8 +38,8 @@ const RockPaperScissors = () => {
                     return 'step2 win'
             }
         }
-        if(step1 === 'paper'){
-            switch (step2){
+        if (step1 === 'paper') {
+            switch (step2) {
                 case 'paper':
                     return 'draw';
                 case 'scissors':
@@ -26,8 +48,8 @@ const RockPaperScissors = () => {
                     return 'step2 lose'
             }
         }
-        if(step1 === 'scissors'){
-            switch (step2){
+        if (step1 === 'scissors') {
+            switch (step2) {
                 case 'scissors' :
                     return 'draw'
                 case 'stone':
@@ -39,15 +61,57 @@ const RockPaperScissors = () => {
     }
 
     return (
-        <div className={'flex flex-col w-36'}>
-            <input type={'text'} className={'border-black border'} onChange={(e)=>{setStepOne(e.currentTarget.value)}}/>
-            <input type={'text'} className={'border-black border'} onChange={(e)=>{setStepTwo(e.currentTarget.value)}}/>
-            <button onClick={()=>{
-                setWinner(getWinner(stepOne, stepTwo) as string);
-            }}>
-                ok
-            </button>
-            <p>{winner}</p>
+        <div
+            className={`${theme === 'dark' ? 'text-white' : ''} relative w-full flex h-full flex-col justify-evenly items-center`}>
+            <div className={'relative w-full h-[100px] flex justify-center'}>
+                {
+                    actions.map((item, i) =>
+                        <button className={'relative h-full opacity-30 cursor-default'} onClick={() => {
+                            if(!winner)
+                            setStepOne(item.name)
+                        }}>
+                            <img
+                                className={`${theme === 'dark' ? 'invert' : ''} relative h-[60%]`}
+                                src={item.img} alt={item.name}/>
+                        </button>
+                    )
+                }
+            </div>
+            <div className={'relative w-full h-[40%] flex justify-center items-center'}>
+                <p className={'text-5xl'}>{winner}</p>
+            </div>
+            <div className={'relative w-full h-[170px] flex justify-center'}>
+                {
+                    actions.map((item, i) =>
+                        <button className={'relative h-full'} onClick={() => {
+                            if(!winner)
+                            setStepTwo(item.name)
+                        }}>
+                            <img
+                                className={`${theme === 'dark' ? 'invert' : ''} ${stepTwo === item.name ? 'opacity-100 scale-125' : 'opacity-80 hover:scale-105'} relative h-[60%]`}
+                                src={item.img} alt={item.name}/>
+                        </button>
+                    )
+                }
+            </div>
+            <Button className={'w-48'} color={theme === 'dark' ? 'inherit' : 'info'}
+                    variant="outlined" onClick={() => {
+                if (winner) {
+                    setWinner('');
+                    setStepOne('');
+                    setStepTwo('');
+                } else {
+                    if(stepTwo && stepOne)
+                    setWinner(getWinner(stepOne, stepTwo) as string);
+                    setStepOne('');
+                    setStepTwo('');
+                }
+            }}
+            >{
+                winner
+                    ? 'Restart'
+                    : 'ok'
+            }</Button>
         </div>
     )
 

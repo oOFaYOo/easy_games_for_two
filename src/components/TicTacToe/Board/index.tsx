@@ -1,5 +1,6 @@
 import React from "react";
 import Square from "../Square";
+import {IBoard} from "./type";
 
 function calculateWinner(squares: string[]) {
     const lines = [
@@ -25,7 +26,7 @@ const Board = ({
                    xIsNext,
                    squares,
                    onPlay
-               }: { xIsNext: boolean, squares: string[], onPlay: (nextSquares: string[]) => void }) => {
+               }: IBoard) => {
     function handleClick(i: any) {
         if (calculateWinner(squares) || squares[i]) {
             return;
@@ -49,7 +50,6 @@ const Board = ({
 
     return (
         <>
-            <div>{status}</div>
             <div>
                 <Square value={squares[0]} onSquareClick={() => handleClick(0)}/>
                 <Square value={squares[1]} onSquareClick={() => handleClick(1)}/>

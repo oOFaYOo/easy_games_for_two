@@ -4,6 +4,8 @@ import {RootState} from "../../store";
 import {Button} from "@mui/material";
 import {ITile} from "./type";
 import {Link} from "react-router-dom";
+import TicTacToeImage from "./free-icon-tic-tac-toe-2679549.png";
+import RockPaperScissorsImage from "./free-icon-rock-paper-scissors-10199891.png";
 
 const Tile = ({id, game}: ITile) => {
     const {theme} = useSelector((state: RootState) => state.Task7Store);
@@ -14,17 +16,18 @@ const Tile = ({id, game}: ITile) => {
             : 'hover:border-sky-500'}
              border-2 border-transparent shadow-md rounded-md min-w-[455px] w-[45%] h-44 p-4 flex justify-between`}>
             <div className={'flex flex-col justify-evenly items-center'}>
-                <h3 title={game} className={'w-[200px] text-center whitespace-nowrap overflow-hidden text-ellipsis'}>
+                <h3 title={game} className={'w-[200px] text-xl text-center whitespace-nowrap overflow-hidden text-ellipsis'}>
                     {game}
                 </h3>
-                <Link to={`/games/${id}`}>
+                <Link to={`/games/${game}/${id}`}>
                     <Button
                         color={theme === 'dark' ? 'inherit' : 'info'}
                         variant="outlined">join the game</Button>
                 </Link>
             </div>
-            <div className={'bg-neutral-600 h-full min-w-[200px]'}>
-
+            <div className={'h-full min-w-[200px] flex justify-center'}>
+                <img className={`${theme === 'dark' ? 'invert' : ''} relative h-full`} src={game === 'TicTacToe' ? TicTacToeImage : RockPaperScissorsImage}
+                     alt={game}/>
             </div>
         </div>
     )

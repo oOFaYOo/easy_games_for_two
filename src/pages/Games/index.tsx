@@ -13,6 +13,7 @@ const Games = () => {
                         className={'w-[90%] p-4 h-[500px] styled_scrollbar overflow-y-auto relative flex flex-wrap gap-4 justify-between'}>
                         {/*{data.map((item, i) => */}
                             <Tile id={'123'} game={'TicTacToe'}/>
+                            <Tile id={'123'} game={'RockPaperScissors'}/>
                         {/*)}*/}
                     </div>
             {/*        : <CircularProgress/>*/}
