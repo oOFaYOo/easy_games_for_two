@@ -30,8 +30,8 @@ const Modal = ({text, buttonText, action, modalValue, setModalValue, closeFromOu
                                     if(setModalValue)
                                     setModalValue(e.target.value)
                         }}/>
-                    :  <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                            <InputLabel id="demo-simple-select-standard-label">{selectorProps?.title}</InputLabel>
+                    :  <FormControl variant="standard" sx={{ m: 1, minWidth: 120}}>
+                            <InputLabel  id="demo-simple-select-standard-label">{selectorProps?.title}</InputLabel>
                             <Select
                                 labelId="demo-simple-select-standard-label"
                                 id="demo-simple-select-standard"

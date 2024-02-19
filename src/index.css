@@ -18,3 +18,11 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.MuiSelect-icon, .MuiInputBase-root, .MuiFormLabel-root {
+  color:inherit !important;
+}
+
+.MuiInput-underline::before {
+  border-color: #36a5e5 !important;
+}
