@@ -3,28 +3,42 @@ import RockPaperScissors from "../../../components/RockPaperScissors";
 import TicTacToe from "../../../components/TicTacToe";
 import {useParams} from "react-router-dom";
 import api from "../../../api_client";
-import {GameType} from "../../../api_client/type";
+import {GameType, IRockPaperScissorsState, ITicTacToeState} from "../../../api_client/type";
+import {CircularProgress} from "@mui/material";
 
 const Game = () => {
     const {type, id} = useParams();
-    const [data, setData] = useState<GameType | null>(null);
+    const [data, setData] = useState<GameType<ITicTacToeState | IRockPaperScissorsState>| null>(null);
 
     useEffect(() => {
-        (async ()=>{
-            const response = await api.getGame(id!);
-            if(response.status === 200){
-                setData(response.data);
+        (async () => {
+            if (!data) {
+                let response;
+                if(type === 'TicTacToe'){
+                    response = await api.getGame<ITicTacToeState>(id!);
+                } else {
+                    response = await api.getGame<IRockPaperScissorsState>(id!);
+                }
+                if (response.status === 200) {
+                    setData(response.data);
+                } else {
+                    console.log('Error.' + response.status)
+                }
             }
-            console.log(data)
         })()
     }, [])
+
 
     return (
         <div className={'relative w-full flex grow justify-center items-center'}>
             {
-                type === 'TicTacToe'
-                ? <TicTacToe data={data!} />
-                :  <RockPaperScissors data={data!} />
+                !data
+                    ? <CircularProgress/>
+                    : type === 'TicTacToe'
+
+                        ? <TicTacToe data={data!}/>
+
+                        : <RockPaperScissors data={data!}/>
             }
         </div>
     )

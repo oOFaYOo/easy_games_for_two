@@ -3,9 +3,9 @@ import Board from "./Board";
 import {Button} from "@mui/material";
 import {useSelector} from "react-redux";
 import {RootState} from "../../store";
-import {GameType} from "../../api_client/type";
+import {GameType, ITicTacToeState} from "../../api_client/type";
 
-const TicTacToe = ({data}: { data: GameType }) => {
+const TicTacToe = ({data}: { data: GameType<ITicTacToeState> }) => {
     const {
         id,
         type,

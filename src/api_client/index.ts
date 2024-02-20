@@ -1,14 +1,5 @@
 import {IApiClient} from "./type";
 
-
-export interface ITicTacToeState {
-    grid: string[][]
-}
-
-export interface IRockPaperScissorsState {
-    lastMove: string
-}
-
 class ApiClient implements IApiClient {
     async getGames() {
         const response = await fetch('/api/games', {method: 'get',});
@@ -83,7 +74,7 @@ class ApiClient implements IApiClient {
         }
     }
 
-    async makeMove(gameId: string, type: 'TicTacToe' | 'RockPaperScissors', move: any) {
+    async makeMove(gameId: string, type: 'TicTacToe' | 'RockPaperScissors', userId:string, move: string) {
         const response = await fetch(
             `/api/games/${gameId}`,
             {
@@ -91,11 +82,11 @@ class ApiClient implements IApiClient {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({type: type, move: move})
+                body: JSON.stringify({type: type, move: move, userId:userId})
             });
         return {
             status: response.status,
-            data: await response.json()
+            data: undefined
         }
     }
 }
