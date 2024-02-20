@@ -6,6 +6,7 @@ import {ITile} from "./type";
 import {Link} from "react-router-dom";
 import TicTacToeImage from "./free-icon-tic-tac-toe-2679549.png";
 import RockPaperScissorsImage from "./free-icon-rock-paper-scissors-10199891.png";
+import api from "../../api_client";
 
 const Tile = ({id, game}: ITile) => {
     const {theme} = useSelector((state: RootState) => state.Task7Store);
@@ -20,7 +21,14 @@ const Tile = ({id, game}: ITile) => {
                     {game}
                 </h3>
                 <Link to={`/games/${game}/${id}`}>
-                    <Button
+                    <Button onClick={async ()=>{
+                        let response = await api.joinToGame(id, localStorage.userName);
+                        if(response.status === 200){
+                            document.location = `/games/${game}/${id}`;
+                        } else {
+                            console.log('Error. ' + response.status);
+                        }
+                    }}
                         color={theme === 'dark' ? 'inherit' : 'info'}
                         variant="outlined">join the game</Button>
                 </Link>

@@ -35,7 +35,7 @@ const Modal = ({text, buttonText, action, modalValue, setModalValue, closeFromOu
                             <Select
                                 labelId="demo-simple-select-standard-label"
                                 id="demo-simple-select-standard"
-                                value={modalValue}
+                                value={'TicTacToe'}
                                 onChange={(e)=>{
                                     if(setModalValue)
                                     setModalValue(e.target.value)
@@ -44,7 +44,7 @@ const Modal = ({text, buttonText, action, modalValue, setModalValue, closeFromOu
                             >
                                 {
                                     selectorProps?.variants.map((item, i)=>
-                                        <MenuItem key={i} value={i+1}>{item}</MenuItem>
+                                        <MenuItem key={i} value={item}>{item}</MenuItem>
                                     )
                                 }
                             </Select>

@@ -5,16 +5,18 @@ import DarkModeIcon from '@mui/icons-material/DarkMode';
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../../store";
 import {setTheme} from "../../store/slice";
-import {useLocation} from "react-router-dom";
+import {useLocation, useParams} from "react-router-dom";
 import Modal from "../Modal";
+import api from "../../api_client"
 
 const Header = () => {
     const dispatch = useDispatch();
     const {theme} = useSelector((state: RootState) => state.Task7Store);
     let location = useLocation().pathname;
+    const id = useParams().id;
 
     const [openModal, setOpenModal] = useState<boolean>(false);
-    const [game, setGame] = useState<number>(-1);
+    const [game, setGame] = useState<'TicTacToe'|'RockPaperScissors' | string>('');
 
     return (
         <>
@@ -22,8 +24,17 @@ const Header = () => {
                 openModal
                     ? <Modal text={'Please select the game'} type={'selector'} modalValue={game} setModalValue={setGame}
                              selectorProps={{title: 'Game', variants: ['TicTacToe', 'RockPaperScissors']}}
-                             buttonText={'ok'} closeFromOutside={setOpenModal} action={() => {
-                        if (game > 0) {
+                             buttonText={'ok'} closeFromOutside={setOpenModal} action={async () => {
+                        if (game) {
+                            const response = await api.createGame(game);
+                            if(response.status === 200) {
+                                const res = await api.joinToGame(response.data.gameId, localStorage.userName);
+                                if(res.status === 200){
+                                    document.location = `/games/${game}/${response.data.gameId}`;
+                                } else {
+                                    console.log('Error. ' + res.status);
+                                }
+                            }console.log('Error. ' + response.status);
                             setOpenModal(false);
                         }
                     }}/>
@@ -48,9 +59,12 @@ const Header = () => {
                 <div className={'w-[30%] flex justify-center items-center'}>
                     <Button color={'inherit'} variant="outlined"
                             onClick={() => {
-                                location === '/games'
-                                    ? (setOpenModal(true))
-                                    : document.location = '/games'
+                                if(location === '/games'){
+                                    (setOpenModal(true));
+                                } else {
+                                    api.leaveGame(id!, localStorage.userName);
+                                    document.location = '/games';
+                                }
                             }}>
                         {location === '/games'
                             ? 'Create new game'

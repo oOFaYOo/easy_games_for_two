@@ -99,8 +99,10 @@ app.post('/api/games/leave/:id', async (req, res) => {
 app.post('/api/games', async (req, res) => {
     try {
         const type = JSON.parse(req.body).type;
-        await sql`insert into task7games values (${btoa(Math.random().toString()+Date.now())}, ${type}, null, null, null, 1, '')`;
+        const gameId = btoa(Math.random().toString()+Date.now());
+        await sql`insert into task7games values (${gameId}, ${type}, null, null, null, 1, '')`;
         res.status(200);
+        res.send(gameId);
     }
     catch (e){
         console.error(e);
