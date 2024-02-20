@@ -1,7 +1,8 @@
 export interface IApiClient {
     getGames: () => Promise<{ status: number, data: AllGamesType }>;
     getGame: (gameID:string) => Promise<{ status: number, data: GameType }>;
-    joinToGame: (gameID:string, userID:string) => Promise<{ status: number, data: undefined }>;
+    joinToGame: (gameID:string, name:string) => Promise<{ status: number, data: undefined }>;
+    leaveGame: (gameID:string, name:string) => Promise<{ status: number, data: undefined }>;
     createGame: (type:string) => Promise<{ status: number, data: undefined }>;
     makeMove: (gameID:string, type:'TicTacToe' | 'RockPaperScissors', move:any) => Promise<{ status: number, data: undefined }>;
 }

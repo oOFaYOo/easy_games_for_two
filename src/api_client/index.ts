@@ -17,9 +17,27 @@ class ApiClient implements IApiClient {
         }
     }
 
-    async joinToGame(gameID: string, userID: string) {
+    async joinToGame(gameID: string, name: string) {
+        const userID = btoa(name+Date.now());
         const response = await fetch(
-            `/api/games/${gameID}`,
+            `/api/games/join/${gameID}`,
+            {
+                method: 'post',
+                body: JSON.stringify({
+                    userID: userID,
+                    name: name
+                })
+            });
+        return {
+            status: response.status,
+            data: await response.json()
+        }
+    }
+
+    async leaveGame(gameID: string, name: string){
+        const userID = btoa(name+Date.now());
+        const response = await fetch(
+            `/api/games/leave/${gameID}`,
             {
                 method: 'post',
                 body: JSON.stringify({
