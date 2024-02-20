@@ -22,6 +22,7 @@ function App() {
                            buttonText={'Go'} action={() => {
                       if (userName) {
                           localStorage.userName = userName;
+                          localStorage.userId = btoa(userName+Date.now())
                           setOpenModal(false);
                       }
                   }}/>

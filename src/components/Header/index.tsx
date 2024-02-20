@@ -27,8 +27,9 @@ const Header = () => {
                              buttonText={'ok'} closeFromOutside={setOpenModal} action={async () => {
                         if (game) {
                             const response = await api.createGame(game);
+                            console.log(response);
                             if(response.status === 200) {
-                                const res = await api.joinToGame(response.data.gameId, localStorage.userName);
+                                const res = await api.joinToGame(response.data.gameId, localStorage.userName, localStorage.userId);
                                 if(res.status === 200){
                                     document.location = `/games/${game}/${response.data.gameId}`;
                                 } else {
@@ -62,7 +63,7 @@ const Header = () => {
                                 if(location === '/games'){
                                     (setOpenModal(true));
                                 } else {
-                                    api.leaveGame(id!, localStorage.userName);
+                                    api.leaveGame(id!, localStorage.userName, localStorage.userId);
                                     document.location = '/games';
                                 }
                             }}>

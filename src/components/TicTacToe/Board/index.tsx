@@ -23,6 +23,7 @@ function calculateWinner(squares: string[]) {
 }
 
 const Board = ({
+    isYourTurn,
                    xIsNext,
                    squares,
                    onPlay
@@ -51,19 +52,19 @@ const Board = ({
     return (
         <>
             <div>
-                <Square value={squares[0]} onSquareClick={() => handleClick(0)}/>
-                <Square value={squares[1]} onSquareClick={() => handleClick(1)}/>
-                <Square value={squares[2]} onSquareClick={() => handleClick(2)}/>
+                <Square disabled={!isYourTurn} value={squares[0]} onSquareClick={() => handleClick(0)}/>
+                <Square disabled={!isYourTurn} value={squares[1]} onSquareClick={() => handleClick(1)}/>
+                <Square disabled={!isYourTurn} value={squares[2]} onSquareClick={() => handleClick(2)}/>
             </div>
             <div>
-                <Square value={squares[3]} onSquareClick={() => handleClick(3)}/>
-                <Square value={squares[4]} onSquareClick={() => handleClick(4)}/>
-                <Square value={squares[5]} onSquareClick={() => handleClick(5)}/>
+                <Square disabled={!isYourTurn} value={squares[3]} onSquareClick={() => handleClick(3)}/>
+                <Square disabled={!isYourTurn} value={squares[4]} onSquareClick={() => handleClick(4)}/>
+                <Square disabled={!isYourTurn} value={squares[5]} onSquareClick={() => handleClick(5)}/>
             </div>
             <div>
-                <Square value={squares[6]} onSquareClick={() => handleClick(6)}/>
-                <Square value={squares[7]} onSquareClick={() => handleClick(7)}/>
-                <Square value={squares[8]} onSquareClick={() => handleClick(8)}/>
+                <Square disabled={!isYourTurn} value={squares[6]} onSquareClick={() => handleClick(6)}/>
+                <Square disabled={!isYourTurn} value={squares[7]} onSquareClick={() => handleClick(7)}/>
+                <Square disabled={!isYourTurn} value={squares[8]} onSquareClick={() => handleClick(8)}/>
             </div>
         </>
     );

@@ -22,7 +22,7 @@ const Tile = ({id, game}: ITile) => {
                 </h3>
                 <Link to={`/games/${game}/${id}`}>
                     <Button onClick={async ()=>{
-                        let response = await api.joinToGame(id, localStorage.userName);
+                        let response = await api.joinToGame(id, localStorage.userName, localStorage.userId);
                         if(response.status === 200){
                             document.location = `/games/${game}/${id}`;
                         } else {

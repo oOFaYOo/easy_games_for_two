@@ -1,47 +1,66 @@
 import {IApiClient} from "./type";
 
+
+export interface ITicTacToeState {
+    grid: string[][]
+}
+
+export interface IRockPaperScissorsState {
+    lastMove: string
+}
+
 class ApiClient implements IApiClient {
     async getGames() {
         const response = await fetch('/api/games', {method: 'get',});
         return {
             status: response.status,
-            data: await response.json()
+            data: await response.json(),
+            headers: {
+                'Content-Type': 'application/json'
+            },
         }
     }
 
-    async getGame(gameID: string) {
-        const response = await fetch(`/api/games/${gameID}`, {method: 'get',});
+    async getGame<T>(gameId: string){
+        const response = await fetch(`/api/games/${gameId}`, {method: 'get',});
         return {
             status: response.status,
-            data: await response.json()
+            data: await response.json(),
+            headers: {
+                'Content-Type': 'application/json'
+            },
         }
     }
 
-    async joinToGame(gameID: string, name: string) {
-        const userID = btoa(name+Date.now());
+    async joinToGame(gameId: string, name: string, userId:string) {
         const response = await fetch(
-            `/api/games/join/${gameID}`,
+            `/api/games/join/${gameId}`,
             {
                 method: 'post',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify({
-                    userID: userID,
+                    userId: userId,
                     name: name
                 })
             });
         return {
             status: response.status,
-            data: await response.json()
+            data: undefined
         }
     }
 
-    async leaveGame(gameID: string, name: string){
-        const userID = btoa(name+Date.now());
+    async leaveGame(gameId: string, name: string, userId:string){
         const response = await fetch(
-            `/api/games/leave/${gameID}`,
+            `/api/games/leave/${gameId}`,
             {
                 method: 'post',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify({
-                    userID: userID,
+                    userId: userId,
                 })
             });
         return {
@@ -51,18 +70,27 @@ class ApiClient implements IApiClient {
     }
 
     async createGame(type: string) {
-        const response = await fetch('/api/games', {method: 'post', body: JSON.stringify({type: type})});
+        const response = await fetch('/api/games', {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({type: type}),
+        });
         return {
             status: response.status,
             data: await response.json()
         }
     }
 
-    async makeMove(gameID: string, type: 'TicTacToe' | 'RockPaperScissors', move: any) {
+    async makeMove(gameId: string, type: 'TicTacToe' | 'RockPaperScissors', move: any) {
         const response = await fetch(
-            `/api/games/${gameID}`,
+            `/api/games/${gameId}`,
             {
                 method: 'post',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify({type: type, move: move})
             });
         return {

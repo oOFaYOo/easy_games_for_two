@@ -41,7 +41,6 @@ app.get('/api/games/:id', async (req, res) => {
     try{
         const id = req.params.id;
         const game = (await sql`select * from task7games where id = ${id}`).rows[0];
-        //?????
         res.send(game);
         }
     catch (e){
@@ -55,14 +54,22 @@ app.post('/api/games/join/:id', async (req, res) => {
     try {
         const gameId = req.params.id;
         const {userId, name} = req.body;
+        if (!userId || !name) {
+            res.status(409);
+            res.end();
+            return;
+        }
         const user = {id:userId, name:name};
-        const {player1, player2} = (await sql`select player1, player2 from task7games where id = ${gameId}`).rows[0];
+
+        const {player1, player2} = (await sql`select player1, player2 from task7games where Id = ${gameId}`).rows[0];
+
         if(!player1){
             await sql`update task7games set player1 = ${JSON.stringify(user)} where id = ${gameId}`;
         } else {
             await sql`update task7games set player2 = ${JSON.stringify(user)} where id = ${gameId}`;
         }
         res.status(200);
+        res.end();
     }
     catch (e){
         console.error(e);
@@ -74,7 +81,7 @@ app.post('/api/games/join/:id', async (req, res) => {
 app.post('/api/games/leave/:id', async (req, res) => {
     try {
         const gameId = req.params.id;
-        const {userId} = JSON.parse(req.body);
+        const {userId} = req.body;
         const {player1, player2} = (await sql`select player1, player2 from task7games where id = ${gameId}`).rows[0];
         if(JSON.parse(player1).id === userId){
             await sql`update task7games set player1 = null where id = ${gameId}`;
@@ -99,10 +106,22 @@ app.post('/api/games/leave/:id', async (req, res) => {
 app.post('/api/games', async (req, res) => {
     try {
         const type = req.body.type;
+        console.log(req.body);
         const gameId = btoa(Math.random().toString()+Date.now());
-        await sql`insert into task7games values (${gameId}, ${type}, null, null, null, 1, '')`;
+        let state;
+        switch (type) {
+            case 'TicTacToe':
+                state = JSON.stringify({grid: []})
+                break;
+            case 'RockPaperScissors':
+                state = JSON.stringify({lastMove:''})
+                break;
+            default:
+                throw new Error(`Unsupported game type ${type}`);
+        }
+        await sql`insert into task7games values (${gameId}, ${type}, null, null, null, 1, ${state})`;
         res.status(200);
-        res.send(gameId);
+        res.send({gameId});
     }
     catch (e){
         console.error(e);
@@ -114,8 +133,52 @@ app.post('/api/games', async (req, res) => {
 app.post('/api/games/:id', async (req, res) => {
     try {
         const gameId = req.params.id;
-        const {type, move} = JSON.parse(req.body);
-        res.status(200);
+        const {type, playerId} = req.body;
+        const nextMove = req.body.move;
+
+        const {player1, player2, move, state} = (await (sql`select * from task7games where id = ${gameId}`)).rows[0];
+        if (player1.id === playerId && move === 1 || player2.id === playerId && move === 2) {
+            switch (type)
+            {
+                case 'TicTacToe':
+                    let tttState = JSON.parse(state) ?? {grid:[]};
+                    const {x, y} = nextMove;
+                    tttState[x] ??= [];
+                    if (!tttState[x][y])
+                        tttState[x][y] = move === 1 ? 'X' : 'O';
+                    else
+                    {
+                        res.status(409);
+                        res.end('Not your turn');
+                        return;
+                    }
+                    const newState = JSON.stringify(tttState);
+                    const newMove = move === 1 ? 2 : 1;
+                    await sql`update task7games set state = ${newState} set move = ${newMove} where id = ${gameId}`;
+                    break;
+                case 'RockPaperScissors':
+                    let rpsState = JSON.parse(state);
+                    if (!rpsState.lastMove)
+                    {
+                        const newState = JSON.stringify({lastMove: nextMove});
+                        const newMove = move === 1 ? 2 : 1;
+                        await sql`update task7games set state = ${newState} set move = ${newMove} where id = ${gameId}`;
+                    } else {
+                        const newState = JSON.stringify({lastMove: ''});
+                        const newMove = move === 1 ? 2 : 1;
+                        const winner = player2.name; // fix
+                        await sql`update task7games set state = ${newState} set move = ${newMove} set winner = ${winner} where id = ${gameId}`;
+                    }
+                    break;
+                default:
+                    throw new Error(`Unsupported game type ${type}`);
+            }
+            res.status(200);
+            res.end();
+            return;
+        }
+        res.status(409);
+        res.end();
     }
     catch (e){
         console.error(e);

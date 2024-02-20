@@ -5,12 +5,22 @@ import StoneImage from "./free-icon-fist-1527443.png";
 import PaperImage from "./free-icon-palm-4866399.png";
 import ScissorsImage from "./free-icon-victory-735804.png";
 import {Button} from "@mui/material";
+import {GameType} from "../../api_client/type";
 
-const RockPaperScissors = () => {
+const RockPaperScissors = ({data}: { data: GameType }) => {
+    const {
+        id,
+        type,
+        player1,
+        player2,
+        winner,
+        move,
+        state
+    } = data;
     const {theme} = useSelector((state: RootState) => state.Task7Store);
     const [stepOne, setStepOne] = useState<string>('');
     const [stepTwo, setStepTwo] = useState<string>('');
-    const [winner, setWinner] = useState<string>('');
+    const [winner1, setWinner] = useState<string>('');
 
     const actions = [
         {
@@ -67,8 +77,8 @@ const RockPaperScissors = () => {
                 {
                     actions.map((item, i) =>
                         <button className={'relative h-full opacity-30 cursor-default'} onClick={() => {
-                            if(!winner)
-                            setStepOne(item.name)
+                            if (!winner1)
+                                setStepOne(item.name)
                         }}>
                             <img
                                 className={`${theme === 'dark' ? 'invert' : ''} relative h-[60%]`}
@@ -78,14 +88,14 @@ const RockPaperScissors = () => {
                 }
             </div>
             <div className={'relative w-full h-[40%] flex justify-center items-center'}>
-                <p className={'text-5xl'}>{winner}</p>
+                <p className={'text-5xl'}>{winner1}</p>
             </div>
             <div className={'relative w-full h-[170px] flex justify-center'}>
                 {
                     actions.map((item, i) =>
                         <button className={'relative h-full'} onClick={() => {
-                            if(!winner)
-                            setStepTwo(item.name)
+                            if (!winner1)
+                                setStepTwo(item.name)
                         }}>
                             <img
                                 className={`${theme === 'dark' ? 'invert' : ''} ${stepTwo === item.name ? 'opacity-100 scale-125' : 'opacity-80 hover:scale-105'} relative h-[60%]`}
@@ -96,19 +106,19 @@ const RockPaperScissors = () => {
             </div>
             <Button className={'w-48'} color={theme === 'dark' ? 'inherit' : 'info'}
                     variant="outlined" onClick={() => {
-                if (winner) {
+                if (winner1) {
                     setWinner('');
                     setStepOne('');
                     setStepTwo('');
                 } else {
-                    if(stepTwo && stepOne)
-                    setWinner(getWinner(stepOne, stepTwo) as string);
+                    if (stepTwo && stepOne)
+                        setWinner(getWinner(stepOne, stepTwo) as string);
                     setStepOne('');
                     setStepTwo('');
                 }
             }}
             >{
-                winner
+                winner1
                     ? 'Restart'
                     : 'ok'
             }</Button>
