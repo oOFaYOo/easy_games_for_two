@@ -54,7 +54,7 @@ app.get('/api/games/:id', async (req, res) => {
 app.post('/api/games/join/:id', async (req, res) => {
     try {
         const gameId = req.params.id;
-        const {userId, name} = JSON.parse(req.body);
+        const {userId, name} = req.body;
         const user = {id:userId, name:name};
         const {player1, player2} = (await sql`select player1, player2 from task7games where id = ${gameId}`).rows[0];
         if(!player1){
@@ -98,7 +98,7 @@ app.post('/api/games/leave/:id', async (req, res) => {
 
 app.post('/api/games', async (req, res) => {
     try {
-        const type = JSON.parse(req.body).type;
+        const type = req.body.type;
         const gameId = btoa(Math.random().toString()+Date.now());
         await sql`insert into task7games values (${gameId}, ${type}, null, null, null, 1, '')`;
         res.status(200);

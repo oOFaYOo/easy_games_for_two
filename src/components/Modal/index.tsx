@@ -35,7 +35,7 @@ const Modal = ({text, buttonText, action, modalValue, setModalValue, closeFromOu
                             <Select
                                 labelId="demo-simple-select-standard-label"
                                 id="demo-simple-select-standard"
-                                value={'TicTacToe'}
+                                value={modalValue}
                                 onChange={(e)=>{
                                     if(setModalValue)
                                     setModalValue(e.target.value)
