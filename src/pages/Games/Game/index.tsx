@@ -32,7 +32,6 @@ const Game = () => {
         })()
     }, [])
 
-
     return (
         <div className={'relative w-full flex grow justify-center items-center'}>
             {

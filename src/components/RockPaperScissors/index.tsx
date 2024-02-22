@@ -56,24 +56,42 @@ const RockPaperScissors = (props: { game: GameOfType<IRockPaperScissorsState> })
                 {
                     actions.map((item, i) =>
                         <button className={'relative h-full'} onClick={async () => {
+                            if(!game.winner)
                             await api_client.makeMove(game.id, localStorage.userId, item.name);
                         }}>
                             <img
                                 className={`${theme === 'dark' ? 'invert' : ''} ${!isYourTurn 
                                     ? 'opacity-100 scale-125' 
-                                    : 'opacity-80 hover:scale-105'} relative h-[60%]`}
+                                    : 'opacity-80 hover:scale-105 hover:opacity-100'} relative h-[60%]`}
                                 src={item.img} alt={item.name}/>
                         </button>
                     )
                 }
             </div>
-            <Button disabled={!game.winner} className={'w-48'} color={theme === 'dark' ? 'inherit' : 'info'}
+            <Button disabled={!game.winner}
+                    className={'w-48'}
+                    color={theme === 'dark' ? 'inherit' : 'info'}
+                    sx={{
+                        "&.Mui-disabled": {
+                            borderColor: theme ==='dark' ? "rgba(255,255,255,0.25)" : '',
+                            color: theme ==='dark' ? "rgba(255,255,255,0.25)" : ''
+                        }
+                    }}
                     variant="outlined" onClick={async () => {
                 await api_client.restartGame(game.id, localStorage.userId);
                 const response = await api_client.getGame(game.id);
                 setGame(response.data);
             }}
-            >{(game.winner ? game.winner === localStorage.userName ? 'You win! ' : 'You Lose! ' : null) + 'Restart?'}</Button>
+            >
+                {game.winner
+                    ? game.winner === 'Draw'
+                        ? 'Draw! '
+                        : game.winner === localStorage.userName
+                            ? 'You win! '
+                            : 'You Lose! '
+                    : ''}
+                Restart?
+            </Button>
         </div>
     )
 }

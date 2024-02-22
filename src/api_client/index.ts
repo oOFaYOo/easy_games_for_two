@@ -74,7 +74,7 @@ class ApiClient implements IApiClient {
             });
         return {
             status: response.status,
-            data: await response.json()
+            data: undefined
         }
     }
 
