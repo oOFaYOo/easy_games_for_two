@@ -14,20 +14,16 @@ const TicTacToe = (props: { game: GameOfType<ITicTacToeState> }) => {
     const isYourTurn = (game.turn === 1 && localStorage.userId === game.player1?.id) ||
         (game.turn === 2 && localStorage.userId === game.player2?.id);
 
-    // console.log(localStorage.userId === game.player1?.id);
-    // console.log(isYourTurn);
     const timer = useRef<NodeJS.Timer | null>(null);
     async function handleNextMove(move: number, nextGrid: string[]) {
         setGrid(nextGrid);
         await api_client.makeMove(game.id, localStorage.userId, move);
-        // const response = await api_client.getGame(game.id);
-        // setGame(response.data);
     }
 
     useEffect(() => {
         timer.current ??= setInterval(async () => {
             const response = await api_client.getGame(game.id);
-            console.log(game)
+            setGrid(response.data.state.grid);
             setGame(response.data);}, 1000);
     }, []);
 

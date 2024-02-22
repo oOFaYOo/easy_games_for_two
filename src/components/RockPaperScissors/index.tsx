@@ -33,7 +33,6 @@ const RockPaperScissors = (props: { game: GameOfType<IRockPaperScissorsState> })
     useEffect(() => {
         timer.current ??= setInterval(async () => {
             const response = await api_client.getGame(game.id);
-            console.log(isYourTurn);
             setGame(response.data);}, 1000);
     }, []);
 
