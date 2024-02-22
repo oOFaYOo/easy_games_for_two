@@ -11,6 +11,7 @@ function App() {
     const {theme} = useSelector((state: RootState) => state.Task7Store)
     const [openModal, setOpenModal] = useState<boolean>(!(!!localStorage.userName));
     const [userName, setUserName] = useState<string>('');
+    const [update, setUpdate] = useState(false);
 
   return (
       <div
@@ -28,11 +29,11 @@ function App() {
                   }}/>
                   : null
           }
-          <Header/>
+          <Header setUpdate={setUpdate}/>
           <Routes>
               <Route path={'/'} element={<Navigate to={'/games'}/>}/>
               <Route path={'/games/:type/:id'} element={<Game/>}/>
-              <Route path={'/games'} element={<Games/>}/>
+              <Route path={'/games'} element={<Games update={update} setUpdate={setUpdate}/>}/>
           </Routes>
       </div>
   );

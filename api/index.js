@@ -100,10 +100,23 @@ function applyRockPaperScissorsMove(lastMove, newMove, turn, player1Name, player
 app.use(express.static(path.join(__dirname, '../build')))
 
 app.get('/api/games', async (req, res) => {
-    try {
-        const games = (await sql`select id, type from task7games where player1 is null or player2 is null`).rows;
-        answer(res, 200, JSON.stringify(games));
-    } catch (e){
+    try{
+        const games = await sql`select id, type, player1, player2 from task7games`;
+        console.log(games)
+        const availableGames = [];
+        games.rows.forEach(item => {
+            if(item.player1 && item.player2){
+            } else if(!item.player1 && !item.player2){
+            } else {
+                availableGames.push({
+                    id:item.id,
+                    type:item.type,
+                });
+            }
+        })
+        console.log(availableGames)
+        res.send(availableGames);}
+    catch (e){
         console.error(e);
         answer(res, 500, e.message);
     }
@@ -181,8 +194,13 @@ app.post('/api/games/leave/:id', async (req, res) => {
         const playerOne = JSON.parse(player1);
         const playerTwo = JSON.parse(player2);
         if(playerOne.id === userId){
-            await sql`update task7games set player1 = ${JSON.stringify(playerTwo)}, player2 = null where id = ${gameId}`;
-            return;
+            if(player2){
+                await sql`update task7games set player1 = ${JSON.stringify(playerTwo)}, player2 = null where id = ${gameId}`;
+                return;
+            } else {
+                await sql`delete from task7games where id = ${gameId}`;
+                return;
+            }
         }
         if(playerTwo.id === userId){
             await sql`update task7games set player2 = null where id = ${gameId}`;

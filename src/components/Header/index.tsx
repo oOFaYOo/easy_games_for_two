@@ -8,8 +8,9 @@ import {setTheme} from "../../store/slice";
 import {useLocation} from "react-router-dom";
 import Modal from "../Modal";
 import api from "../../api_client"
+import {HeaderType} from "./type";
 
-const Header = () => {
+const Header = ({setUpdate} : HeaderType) => {
     const dispatch = useDispatch();
     const {theme} = useSelector((state: RootState) => state.Task7Store);
     let location = useLocation().pathname;
@@ -65,6 +66,7 @@ const Header = () => {
                                     (setOpenModal(true));
                                 } else {
                                     api.leaveGame(id!, localStorage.userId);
+                                    setUpdate(true);
                                     document.location = '/games';
                                 }
                             }}>

@@ -11,7 +11,6 @@ import api_client from "../../api_client";
 const RockPaperScissors = (props: { game: GameOfType<IRockPaperScissorsState> }) => {
     const {theme} = useSelector((state: RootState) => state.Task7Store);
     const [game, setGame] = useState(props.game);
-    const [yourMove, setYourMove] = useState();
     const isYourTurn = game.turn === 1 && localStorage.userId === game.player1?.id ||
         game.turn === 2 && localStorage.userId === game.player2?.id;
     const timer = useRef<NodeJS.Timer | null>(null);

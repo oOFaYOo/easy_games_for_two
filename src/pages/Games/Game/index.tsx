@@ -14,10 +14,10 @@ const Game = () => {
         (async () => {
             if (!game) {
                 let response =
-                    type === GameType.TicTacToe 
+                    type === GameType.TicTacToe
                         ? await api.getGame<ITicTacToeState>(id!)
-                        : type === GameType.RockPaperScissors 
-                            ? await api.getGame<IRockPaperScissorsState>(id!) 
+                        : type === GameType.RockPaperScissors
+                            ? await api.getGame<IRockPaperScissorsState>(id!)
                             : null;
 
                 if (!response)

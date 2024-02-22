@@ -3,25 +3,27 @@ import {CircularProgress} from "@mui/material";
 import Tile from "../../components/Tile";
 import api from "../../api_client"
 import {AllGamesType} from "../../api_client/type";
+import {GamesType} from "./type";
 
-const Games = () => {
+const Games = ({update, setUpdate}:GamesType) => {
 
     const [data, setData] = useState<AllGamesType | null>(null);
 
     useEffect(() => {
         (
             async () => {
-                if (!data) {
-                    let response = await api.getGames();
+                if (!data || update) {
+                    const response = await api.getGames();
                     if (response.status === 200) {
-                        setData(response.data)
+                        setData(response.data);
+                        setUpdate(false);
                     } else {
-                        console.log('Error.' + response.status)
+                        console.log(`Error ${response.status}`)
                     }
                 }
             }
         )()
-    }, [])
+    }, [update])
 
     return (
         <div className={'w-full flex flex-col grow justify-center items-center'}>

@@ -2,15 +2,12 @@ import React from "react";
 import Square from "../Square";
 import {IBoard} from "./type";
 
-
-
 const Board = ({
     isYourTurn,
     xIsNext,
     squares,
     onPlay}: IBoard) => {
     function handleClick(i: any) {
-        console.log(i);
         const nextSquares = squares.slice();
         if (xIsNext) {
             nextSquares[i] = 'X';
@@ -21,7 +18,6 @@ const Board = ({
     }
 
     function createCell(i: number): React.ReactElement{
-        console.log(squares);
         return <Square disabled={(!isYourTurn || !!squares[i])} value={squares[i]} onSquareClick={() => handleClick(i)}/>
     }
 

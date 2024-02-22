@@ -8,27 +8,26 @@ import api_client from "../../api_client";
 
 const TicTacToe = (props: { game: GameOfType<ITicTacToeState> }) => {
     const {theme} = useSelector((state: RootState) => state.Task7Store);
+
     const [game, setGame] = useState(props.game);
-    console.log(game);
     const [grid, setGrid] = useState(props.game.state.grid);
     const isYourTurn = (game.turn === 1 && localStorage.userId === game.player1?.id) ||
         (game.turn === 2 && localStorage.userId === game.player2?.id);
 
-
-    console.log(localStorage.userId === game.player1?.id);
-    console.log(isYourTurn);
+    // console.log(localStorage.userId === game.player1?.id);
+    // console.log(isYourTurn);
     const timer = useRef<NodeJS.Timer | null>(null);
     async function handleNextMove(move: number, nextGrid: string[]) {
-        console.log("HEre");
         setGrid(nextGrid);
         await api_client.makeMove(game.id, localStorage.userId, move);
-        const response = await api_client.getGame(game.id);
-        setGame(response.data);
+        // const response = await api_client.getGame(game.id);
+        // setGame(response.data);
     }
 
     useEffect(() => {
         timer.current ??= setInterval(async () => {
             const response = await api_client.getGame(game.id);
+            console.log(game)
             setGame(response.data);}, 1000);
     }, []);
 
@@ -41,13 +40,27 @@ const TicTacToe = (props: { game: GameOfType<ITicTacToeState> }) => {
                     squares={grid}
                     onPlay={(move, grid) => {handleNextMove(move, grid);}}/>
             </div>
-            <Button disabled={!game.winner} className={'w-48'} color={theme === 'dark' ? 'inherit' : 'info'}
-                    variant="outlined" onClick={async () => {
+            <Button disabled={!game.winner}
+                    className={'w-48'}
+                    color={theme === 'dark' ? 'inherit' : 'info'}
+                    sx={{
+                        "&.Mui-disabled": {
+                            borderColor: theme ==='dark' ? "rgba(255,255,255,0.25)" : '',
+                            color: theme ==='dark' ? "rgba(255,255,255,0.25)" : ''
+                        }
+                    }} variant="outlined" onClick={async () => {
                 await api_client.restartGame(game.id, localStorage.userId);
                 const response = await api_client.getGame(game.id);
                 setGame(response.data);
             }}
-            >{(game.winner ? game.winner === localStorage.userName ? 'You win! ' : 'You Lose! ' : null) + 'Restart?'}</Button>
+            > {game.winner
+                ? game.winner === 'Draw'
+                    ? 'Draw! '
+                    : game.winner === localStorage.userName
+                        ? 'You win! '
+                        : 'You Lose! '
+                : ''}
+                Restart?</Button>
         </div>
     );
 }
