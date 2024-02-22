@@ -1,29 +1,20 @@
-import React, {useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {useSelector} from "react-redux";
 import {RootState} from "../../store";
 import StoneImage from "./free-icon-fist-1527443.png";
 import PaperImage from "./free-icon-palm-4866399.png";
 import ScissorsImage from "./free-icon-victory-735804.png";
 import {Button} from "@mui/material";
-import {GameType, IRockPaperScissorsState} from "../../api_client/type";
-import api from "../../api_client";
-import {useParams} from "react-router-dom";
+import {GameOfType, IRockPaperScissorsState} from "../../api_client/type";
+import api_client from "../../api_client";
 
-const RockPaperScissors = ({data}: { data: GameType<IRockPaperScissorsState> }) => {
-    const {
-        id,
-        type,
-        player1,
-        player2,
-        winner,
-        move,
-        state
-    } = data;
+const RockPaperScissors = (props: { game: GameOfType<IRockPaperScissorsState> }) => {
     const {theme} = useSelector((state: RootState) => state.Task7Store);
-    const gameId = useParams().id;
-    const gameType = useParams().type as 'TicTacToe'|'RockPaperScissors';
-    const [stepTwo, setStepTwo] = useState<string>('');
-    // const [stepOne, setStepOne] = useState<string>('');
+    const [game, setGame] = useState(props.game);
+    const [yourMove, setYourMove] = useState();
+    const isYourTurn = game.turn === 1 && localStorage.userId === game.player1?.id ||
+        game.turn === 2 && localStorage.userId === game.player2?.id;
+    const timer = useRef<NodeJS.Timer | null>(null);
 
     const actions = [
         {
@@ -40,38 +31,12 @@ const RockPaperScissors = ({data}: { data: GameType<IRockPaperScissorsState> }) 
         },
     ];
 
-    // function getWinner(step1: string, step2: string) {
-    //     if (step1 === 'stone') {
-    //         switch (step2) {
-    //             case 'stone':
-    //                 return 'draw';
-    //             case 'scissors':
-    //                 return 'step2 lose';
-    //             case 'paper':
-    //                 return 'step2 win'
-    //         }
-    //     }
-    //     if (step1 === 'paper') {
-    //         switch (step2) {
-    //             case 'paper':
-    //                 return 'draw';
-    //             case 'scissors':
-    //                 return 'step2 win';
-    //             case 'stone':
-    //                 return 'step2 lose'
-    //         }
-    //     }
-    //     if (step1 === 'scissors') {
-    //         switch (step2) {
-    //             case 'scissors' :
-    //                 return 'draw'
-    //             case 'stone':
-    //                 return 'step2 win'
-    //             case 'paper':
-    //                 return 'step2 lose'
-    //         }
-    //     }
-    // }
+    useEffect(() => {
+        timer.current ??= setInterval(async () => {
+            const response = await api_client.getGame(game.id);
+            console.log(isYourTurn);
+            setGame(response.data);}, 1000);
+    }, []);
 
     return (
         <div
@@ -87,18 +52,14 @@ const RockPaperScissors = ({data}: { data: GameType<IRockPaperScissorsState> }) 
                     )
                 }
             </div>
-            <div className={'relative w-full h-[40%] flex justify-center items-center'}>
-                <p className={'text-5xl'}>{winner ? `${winner} is win!` : null}</p>
-            </div>
             <div className={'relative w-full h-[170px] flex justify-center'}>
                 {
                     actions.map((item, i) =>
-                        <button className={'relative h-full'} onClick={() => {
-                            if (!winner)
-                                setStepTwo(item.name)
+                        <button className={'relative h-full'} onClick={async () => {
+                            await api_client.makeMove(game.id, localStorage.userId, item.name);
                         }}>
                             <img
-                                className={`${theme === 'dark' ? 'invert' : ''} ${stepTwo === item.name 
+                                className={`${theme === 'dark' ? 'invert' : ''} ${!isYourTurn 
                                     ? 'opacity-100 scale-125' 
                                     : 'opacity-80 hover:scale-105'} relative h-[60%]`}
                                 src={item.img} alt={item.name}/>
@@ -106,27 +67,15 @@ const RockPaperScissors = ({data}: { data: GameType<IRockPaperScissorsState> }) 
                     )
                 }
             </div>
-            <Button className={'w-48'} color={theme === 'dark' ? 'inherit' : 'info'}
-                    variant="outlined" onClick={() => {
-                if (winner) {
-                    // setWinner('');
-                    // setStepOne('');
-                    // setStepTwo('');
-                } else {
-                    if(stepTwo) {
-                        api.makeMove(gameId!, gameType!, localStorage.userId, stepTwo);
-                        //call getGame again
-                    }
-                }
+            <Button disabled={!game.winner} className={'w-48'} color={theme === 'dark' ? 'inherit' : 'info'}
+                    variant="outlined" onClick={async () => {
+                await api_client.restartGame(game.id, localStorage.userId);
+                const response = await api_client.getGame(game.id);
+                setGame(response.data);
             }}
-            >{
-                winner
-                    ? 'Restart'
-                    : 'ok'
-            }</Button>
+            >{(game.winner ? game.winner === localStorage.userName ? 'You win! ' : 'You Lose! ' : null) + 'Restart?'}</Button>
         </div>
     )
-
 }
 
 export default RockPaperScissors;

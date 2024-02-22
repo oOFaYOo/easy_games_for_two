@@ -14,6 +14,7 @@ const Header = () => {
     const {theme} = useSelector((state: RootState) => state.Task7Store);
     let location = useLocation().pathname;
     const id = useParams().id;
+    localStorage.userId ??= btoa(Date.now().toString());
 
     const [openModal, setOpenModal] = useState<boolean>(false);
     const [game, setGame] = useState<'TicTacToe'|'RockPaperScissors' | string>('');

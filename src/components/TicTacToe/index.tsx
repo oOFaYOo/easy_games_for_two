@@ -1,46 +1,53 @@
-import React, {useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import Board from "./Board";
 import {Button} from "@mui/material";
 import {useSelector} from "react-redux";
 import {RootState} from "../../store";
-import {GameType, ITicTacToeState} from "../../api_client/type";
+import {GameOfType, ITicTacToeState} from "../../api_client/type";
+import api_client from "../../api_client";
 
-const TicTacToe = ({data}: { data: GameType<ITicTacToeState> }) => {
-    const {
-        id,
-        type,
-        player1,
-        player2,
-        winner,
-        move,
-        state
-    } = data;
+const TicTacToe = (props: { game: GameOfType<ITicTacToeState> }) => {
     const {theme} = useSelector((state: RootState) => state.Task7Store);
-    const [history, setHistory] = useState([Array(9).fill(null)]);
-    const [currentMove, setCurrentMove] = useState(0);
-    const xIsNext = currentMove % 2 === 0;
-    const currentSquares = history[currentMove];
+    const [game, setGame] = useState(props.game);
+    console.log(game);
+    const [grid, setGrid] = useState(props.game.state.grid);
+    const isYourTurn = (game.turn === 1 && localStorage.userId === game.player1?.id) ||
+        (game.turn === 2 && localStorage.userId === game.player2?.id);
 
-    // const isYourTurn = move === 1 && player1.i;
 
-    function handlePlay(nextSquares: any) {
-        const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
-        setHistory(nextHistory);
-        setCurrentMove(nextHistory.length - 1);
+    console.log(localStorage.userId === game.player1?.id);
+    console.log(isYourTurn);
+    const timer = useRef<NodeJS.Timer | null>(null);
+    async function handleNextMove(move: number, nextGrid: string[]) {
+        console.log("HEre");
+        setGrid(nextGrid);
+        await api_client.makeMove(game.id, localStorage.userId, move);
+        const response = await api_client.getGame(game.id);
+        setGame(response.data);
     }
 
-    function jumpTo(nextMove: any) {
-        setCurrentMove(nextMove);
-    }
+    useEffect(() => {
+        timer.current ??= setInterval(async () => {
+            const response = await api_client.getGame(game.id);
+            setGame(response.data);}, 1000);
+    }, []);
 
     return (
         <div className={'flex flex-col items-center text-white'}>
             <div className={'mb-8'}>
-                {/*<Board isYourTurn={isYourTurn} xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay}/>*/}
+                <Board
+                    isYourTurn={isYourTurn}
+                    xIsNext={game.turn === 1}
+                    squares={grid}
+                    onPlay={(move, grid) => {handleNextMove(move, grid);}}/>
             </div>
-            <Button className={'w-48'} color={theme === 'dark' ? 'inherit' : 'info'}
-                    variant="outlined" onClick={() => jumpTo(0)}
-            >Restart</Button>
+            <Button disabled={!game.winner} className={'w-48'} color={theme === 'dark' ? 'inherit' : 'info'}
+                    variant="outlined" onClick={async () => {
+                await api_client.restartGame(game.id, localStorage.userId);
+                const response = await api_client.getGame(game.id);
+                setGame(response.data);
+            }}
+            >{(game.winner ? game.winner === localStorage.userName ? 'You win! ' : 'You Lose! ' : null) + 'Restart?'}</Button>
         </div>
     );
 }

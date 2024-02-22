@@ -3,24 +3,28 @@ import RockPaperScissors from "../../../components/RockPaperScissors";
 import TicTacToe from "../../../components/TicTacToe";
 import {useParams} from "react-router-dom";
 import api from "../../../api_client";
-import {GameType, IRockPaperScissorsState, ITicTacToeState} from "../../../api_client/type";
+import {GameOfType, GameType, IRockPaperScissorsState, ITicTacToeState} from "../../../api_client/type";
 import {CircularProgress} from "@mui/material";
 
 const Game = () => {
     const {type, id} = useParams();
-    const [data, setData] = useState<GameType<ITicTacToeState | IRockPaperScissorsState>| null>(null);
+    const [game, setGame] = useState<GameOfType<ITicTacToeState | IRockPaperScissorsState>| null>(null);
 
     useEffect(() => {
         (async () => {
-            if (!data) {
-                let response;
-                if(type === 'TicTacToe'){
-                    response = await api.getGame<ITicTacToeState>(id!);
-                } else {
-                    response = await api.getGame<IRockPaperScissorsState>(id!);
-                }
+            if (!game) {
+                let response =
+                    type === GameType.TicTacToe 
+                        ? await api.getGame<ITicTacToeState>(id!)
+                        : type === GameType.RockPaperScissors 
+                            ? await api.getGame<IRockPaperScissorsState>(id!) 
+                            : null;
+
+                if (!response)
+                    return;
+
                 if (response.status === 200) {
-                    setData(response.data);
+                    setGame(response.data);
                 } else {
                     console.log('Error.' + response.status)
                 }
@@ -32,13 +36,13 @@ const Game = () => {
     return (
         <div className={'relative w-full flex grow justify-center items-center'}>
             {
-                !data
+                !game
                     ? <CircularProgress/>
-                    : type === 'TicTacToe'
-
-                        ? <TicTacToe data={data!}/>
-
-                        : <RockPaperScissors data={data!}/>
+                    : type === GameType.TicTacToe
+                        ? <TicTacToe game={game as GameOfType<ITicTacToeState>}/>
+                        : type === GameType.RockPaperScissors
+                            ? <RockPaperScissors game={game as GameOfType<IRockPaperScissorsState>}/>
+                            : null
             }
         </div>
     )

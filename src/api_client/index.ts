@@ -60,6 +60,24 @@ class ApiClient implements IApiClient {
         }
     }
 
+    async restartGame(gameId: string, userId:string){
+        const response = await fetch(
+            `/api/games/restart/${gameId}`,
+            {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    userId: userId,
+                })
+            });
+        return {
+            status: response.status,
+            data: await response.json()
+        }
+    }
+
     async createGame(type: string) {
         const response = await fetch('/api/games', {
             method: 'post',
@@ -74,7 +92,7 @@ class ApiClient implements IApiClient {
         }
     }
 
-    async makeMove(gameId: string, type: 'TicTacToe' | 'RockPaperScissors', userId:string, move: string) {
+    async makeMove(gameId: string, userId:string, move: any) {
         const response = await fetch(
             `/api/games/${gameId}`,
             {
@@ -82,7 +100,7 @@ class ApiClient implements IApiClient {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({type: type, move: move, userId:userId})
+                body: JSON.stringify({ move: move, userId:userId})
             });
         return {
             status: response.status,
