@@ -99,7 +99,6 @@ function applyRockPaperScissorsMove(lastMove, newMove, turn, player1Name, player
 
 app.use(express.static(path.join(__dirname, '../build')))
 
-//get all games
 app.get('/api/games', async (req, res) => {
     try {
         const games = (await sql`select id, type from task7games where player1 is null or player2 is null`).rows;
@@ -110,7 +109,6 @@ app.get('/api/games', async (req, res) => {
     }
 })
 
-//get game by id
 app.get('/api/games/:id', async (req, res) => {
     try {
         const id = req.params.id;
@@ -134,7 +132,6 @@ app.get('/api/games/:id', async (req, res) => {
     }
 });
 
-//join game by id
 app.post('/api/games/join/:id', async (req, res) => {
     try {
         console.log('join');
@@ -176,21 +173,22 @@ app.post('/api/games/join/:id', async (req, res) => {
     }
 });
 
-//leave game by id
 app.post('/api/games/leave/:id', async (req, res) => {
     try {
         const gameId = req.params.id;
         const {userId} = req.body;
-        let {player1, player2} = (await sql`select player1, player2 from task7games where Id = ${gameId}`).rows[0];
-        player1 = JSON.parse(player1);
-        player2 = JSON.parse(player2);
-        if(player1.id === userId){
-            await sql`update task7games set player1 = ${JSON.stringify(player2)}, player2 = null where id = ${gameId}`
+        const {player1, player2} = (await sql`select player1, player2 from task7games where Id = ${gameId}`).rows[0];
+        const playerOne = JSON.parse(player1);
+        const playerTwo = JSON.parse(player2);
+        if(playerOne.id === userId){
+            await sql`update task7games set player1 = ${JSON.stringify(playerTwo)}, player2 = null where id = ${gameId}`;
+            return;
         }
-        if(player2.id === userId){
-            await sql`update task7games set player2 = null where id = ${gameId}`
+        if(playerTwo.id === userId){
+            await sql`update task7games set player2 = null where id = ${gameId}`;
+            return;
         }
-        answer(200)
+        answer(res,200);
     }
     catch (e){
         console.error(e);
@@ -198,7 +196,6 @@ app.post('/api/games/leave/:id', async (req, res) => {
     }
 });
 
-//restart game by id
 app.post('/api/games/restart/:id', async (req, res) => {
     try {
         const gameId = req.params.id;
@@ -224,7 +221,6 @@ app.post('/api/games/restart/:id', async (req, res) => {
     }
 });
 
-//create game
 app.post('/api/games', async (req, res) => {
     try {
         const type = req.body.type;
@@ -240,7 +236,6 @@ app.post('/api/games', async (req, res) => {
     }
 });
 
-//create next move
 app.post('/api/games/:id', async (req, res) => {
     try {
         const gameId = req.params.id;
