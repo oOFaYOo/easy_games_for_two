@@ -44,7 +44,7 @@ const RockPaperScissors = (props: { game: GameOfType<IRockPaperScissorsState> })
             <div className={'relative w-full h-[100px] flex justify-center'}>
                 {
                     actions.map((item, i) =>
-                        <div className={'relative mt-8 h-full opacity-30 cursor-default'}>
+                        <div key={i} className={'relative mt-8 h-full opacity-30 cursor-default'}>
                             <img
                                 className={`${theme === 'dark' ? 'invert' : ''} relative h-[60%]`}
                                 src={item.img} alt={item.name}/>
@@ -55,7 +55,7 @@ const RockPaperScissors = (props: { game: GameOfType<IRockPaperScissorsState> })
             <div className={'relative w-full h-[170px] flex justify-center'}>
                 {
                     actions.map((item, i) =>
-                        <button className={'relative h-full'} onClick={async () => {
+                        <button key={i} className={'relative h-full'} onClick={async () => {
                             if(!game.winner)
                             await api_client.makeMove(game.id, localStorage.userId, item.name);
                         }}>

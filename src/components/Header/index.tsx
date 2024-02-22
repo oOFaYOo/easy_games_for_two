@@ -5,7 +5,7 @@ import DarkModeIcon from '@mui/icons-material/DarkMode';
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../../store";
 import {setTheme} from "../../store/slice";
-import {useLocation, useParams} from "react-router-dom";
+import {useLocation} from "react-router-dom";
 import Modal from "../Modal";
 import api from "../../api_client"
 
@@ -13,7 +13,8 @@ const Header = () => {
     const dispatch = useDispatch();
     const {theme} = useSelector((state: RootState) => state.Task7Store);
     let location = useLocation().pathname;
-    const id = useParams().id;
+    let id = location.split('/')[3];
+    let type = location.split('/')[2]
     localStorage.userId ??= btoa(Date.now().toString());
 
     const [openModal, setOpenModal] = useState<boolean>(false);
@@ -28,7 +29,6 @@ const Header = () => {
                              buttonText={'ok'} closeFromOutside={setOpenModal} action={async () => {
                         if (game) {
                             const response = await api.createGame(game);
-                            console.log(response);
                             if(response.status === 200) {
                                 const res = await api.joinToGame(response.data.gameId, localStorage.userName, localStorage.userId);
                                 if(res.status === 200){
@@ -64,7 +64,7 @@ const Header = () => {
                                 if(location === '/games'){
                                     (setOpenModal(true));
                                 } else {
-                                    api.leaveGame(id!, localStorage.userName, localStorage.userId);
+                                    api.leaveGame(id!, localStorage.userId);
                                     document.location = '/games';
                                 }
                             }}>

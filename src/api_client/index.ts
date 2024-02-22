@@ -42,7 +42,7 @@ class ApiClient implements IApiClient {
         }
     }
 
-    async leaveGame(gameId: string, name: string, userId:string){
+    async leaveGame(gameId: string, userId:string){
         const response = await fetch(
             `/api/games/leave/${gameId}`,
             {
@@ -56,7 +56,7 @@ class ApiClient implements IApiClient {
             });
         return {
             status: response.status,
-            data: await response.json()
+            data: undefined
         }
     }
 

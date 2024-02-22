@@ -163,15 +163,12 @@ app.post('/api/games/join/:id', async (req, res) => {
             return;
         }
 
-        console.log(player1, player2, user);
         if(!player1){
             await sql`update task7games set player1 = ${user} where id = ${gameId}`;
         } else {
             await sql`update task7games set player2 = ${user} where id = ${gameId}`;
         }
-
-
-        answer(res);
+        answer(res, 200);
     }
     catch (e){
         console.error(e);
@@ -184,31 +181,16 @@ app.post('/api/games/leave/:id', async (req, res) => {
     try {
         const gameId = req.params.id;
         const {userId} = req.body;
-        const games = (await sql`select player1, player2 from task7games where Id = ${gameId}`).rows;
-        if (!games.length){
-            answer(res,404, `Game with id ${gameId} not found`);
-            return;
+        let {player1, player2} = (await sql`select player1, player2 from task7games where Id = ${gameId}`).rows[0];
+        player1 = JSON.parse(player1);
+        player2 = JSON.parse(player2);
+        if(player1.id === userId){
+            await sql`update task7games set player1 = ${JSON.stringify(player2)}, player2 = null where id = ${gameId}`
         }
-        const player1 = games[0].player1 ? JSON.parse(games[0].player1) : null;
-        const player2 = games[0].player2 ? JSON.parse(games[0].player2) : null;
-        if (player1?.id !== userId && player2?.id !== userId) {
-            answer(res, 409, `User ${userId} is not joined to game ${gameId}.`)
-            return;
+        if(player2.id === userId){
+            await sql`update task7games set player2 = null where id = ${gameId}`
         }
-
-        if(player1?.id === userId) {
-            await sql`update task7games set player1 = null where id = ${gameId}`;
-            if(!player2){
-                await sql`delete from task7games where id = ${gameId}`;
-            }
-        } else {
-            await sql`update task7games set player2 = null where id = ${gameId}`;
-            if(!player1){
-                await sql`delete from task7games where id = ${gameId}`;
-            }
-        }
-
-        answer(res);
+        answer(200)
     }
     catch (e){
         console.error(e);
@@ -288,7 +270,6 @@ app.post('/api/games/:id', async (req, res) => {
                 : (() => {throw new Error(`Unsupported game type ${game.type}`)})();
 
         const newStateJSON = JSON.stringify(newState);
-        console.log(newStateJSON);
         if (!winner)
             await sql`update task7games set state = ${newStateJSON}, turn = ${nextTurn} where id = ${gameId}`;
         else

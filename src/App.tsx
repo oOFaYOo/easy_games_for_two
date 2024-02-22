@@ -31,8 +31,8 @@ function App() {
           <Header/>
           <Routes>
               <Route path={'/'} element={<Navigate to={'/games'}/>}/>
-              <Route path={'/games'} element={<Games/>}/>
               <Route path={'/games/:type/:id'} element={<Game/>}/>
+              <Route path={'/games'} element={<Games/>}/>
           </Routes>
       </div>
   );

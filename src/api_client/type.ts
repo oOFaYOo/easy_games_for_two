@@ -2,7 +2,7 @@ export interface IApiClient {
     getGames: () => Promise<{ status: number, data: AllGamesType }>;
     getGame:<T>(gameId:string) => Promise<{ status: number, data: GameOfType<T> }>;
     joinToGame: (gameId:string, name:string, userId:string) => Promise<{ status: number, data: undefined }>;
-    leaveGame: (gameId:string, name:string, userId:string) => Promise<{ status: number, data: undefined }>;
+    leaveGame: (gameId:string, userId:string) => Promise<{ status: number, data: undefined }>;
     createGame: (type:string) => Promise<{ status: number, data: {gameId:string} }>;
     makeMove: (gameId:string, userId:string, move:any) => Promise<{ status: number, data: undefined }>;
 }
