@@ -102,7 +102,6 @@ app.use(express.static(path.join(__dirname, '../build')))
 app.get('/api/games', async (req, res) => {
     try{
         const games = await sql`select id, type, player1, player2 from task7games`;
-        console.log(games)
         const availableGames = [];
         games.rows.forEach(item => {
             if(item.player1 && item.player2){
@@ -114,7 +113,6 @@ app.get('/api/games', async (req, res) => {
                 });
             }
         })
-        console.log(availableGames)
         res.send(availableGames);}
     catch (e){
         console.error(e);
@@ -147,7 +145,6 @@ app.get('/api/games/:id', async (req, res) => {
 
 app.post('/api/games/join/:id', async (req, res) => {
     try {
-        console.log('join');
         const gameId = req.params.id;
         const {userId, name} = req.body;
         if (!userId || !name) {
