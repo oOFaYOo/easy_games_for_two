@@ -4,7 +4,6 @@ const cookieParser = require("cookie-parser");
 const path = require('path');
 const {sql} = require('@vercel/postgres');
 
-const tableName = "task7games";
 const TIC_TAC_TOE = "TicTacToe";
 const ROCK_PAPER_SCISSORS = "RockPaperScissors";
 
@@ -39,10 +38,10 @@ function getInitialState(type){
             : (() => {throw new Error(`Unsupported game type ${type}`)})();
 }
 
-function invertTurn(turn)
-{
+function invertTurn(turn){
     return turn === 1 ? 2 : 1;
 }
+
 function applyTicTacToeMove(grid, newMove, turn, player1Name, player2Name) {
     if (newMove > grid.length - 1)
         throw new Error();

@@ -7,7 +7,8 @@ const Board = ({
     xIsNext,
     squares,
     onPlay}: IBoard) => {
-    function handleClick(i: any) {
+
+    function handleClick(i: number) {
         const nextSquares = squares.slice();
         if (xIsNext) {
             nextSquares[i] = 'X';

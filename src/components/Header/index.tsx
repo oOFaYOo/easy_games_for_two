@@ -9,17 +9,18 @@ import {useLocation} from "react-router-dom";
 import Modal from "../Modal";
 import api from "../../api_client"
 import {HeaderType} from "./type";
+import {GameType} from "../../api_client/type";
 
 const Header = ({setUpdate} : HeaderType) => {
     const dispatch = useDispatch();
     const {theme} = useSelector((state: RootState) => state.Task7Store);
     let location = useLocation().pathname;
     let id = location.split('/')[3];
-    let type = location.split('/')[2]
+
     localStorage.userId ??= btoa(Date.now().toString());
 
     const [openModal, setOpenModal] = useState<boolean>(false);
-    const [game, setGame] = useState<'TicTacToe'|'RockPaperScissors' | string>('');
+    const [game, setGame] = useState<GameType | string>('');
 
     return (
         <>
@@ -65,7 +66,7 @@ const Header = ({setUpdate} : HeaderType) => {
                                 if(location === '/games'){
                                     (setOpenModal(true));
                                 } else {
-                                    api.leaveGame(id!, localStorage.userId);
+                                    api.leaveGame(id, localStorage.userId);
                                     setUpdate(true);
                                     document.location = '/games';
                                 }

@@ -6,7 +6,7 @@ import PaperImage from "./free-icon-palm-4866399.png";
 import ScissorsImage from "./free-icon-victory-735804.png";
 import {Button} from "@mui/material";
 import {GameOfType, IRockPaperScissorsState} from "../../api_client/type";
-import api_client from "../../api_client";
+import api from "../../api_client";
 
 const RockPaperScissors = (props: { game: GameOfType<IRockPaperScissorsState> }) => {
     const {theme} = useSelector((state: RootState) => state.Task7Store);
@@ -32,7 +32,7 @@ const RockPaperScissors = (props: { game: GameOfType<IRockPaperScissorsState> })
 
     useEffect(() => {
         timer.current ??= setInterval(async () => {
-            const response = await api_client.getGame(game.id);
+            const response = await api.getGame(game.id);
             setGame(response.data);}, 1000);
     }, []);
 
@@ -55,11 +55,11 @@ const RockPaperScissors = (props: { game: GameOfType<IRockPaperScissorsState> })
                     actions.map((item, i) =>
                         <button key={i} className={'relative h-full'} onClick={async () => {
                             if(!game.winner)
-                            await api_client.makeMove(game.id, localStorage.userId, item.name);
+                            await api.makeMove(game.id, localStorage.userId, item.name);
                         }}>
                             <img
                                 className={`${theme === 'dark' ? 'invert' : ''} ${!isYourTurn 
-                                    ? 'opacity-100 scale-125' 
+                                    ? 'opacity-100 scale-125 cursor-default' 
                                     : 'opacity-80 hover:scale-105 hover:opacity-100'} relative h-[60%]`}
                                 src={item.img} alt={item.name}/>
                         </button>
@@ -76,8 +76,8 @@ const RockPaperScissors = (props: { game: GameOfType<IRockPaperScissorsState> })
                         }
                     }}
                     variant="outlined" onClick={async () => {
-                await api_client.restartGame(game.id, localStorage.userId);
-                const response = await api_client.getGame(game.id);
+                await api.restartGame(game.id, localStorage.userId);
+                const response = await api.getGame(game.id);
                 setGame(response.data);
             }}
             >

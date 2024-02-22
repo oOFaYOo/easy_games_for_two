@@ -92,7 +92,7 @@ class ApiClient implements IApiClient {
         }
     }
 
-    async makeMove(gameId: string, userId:string, move: any) {
+    async makeMove(gameId: string, userId:string, move: string|number) {
         const response = await fetch(
             `/api/games/${gameId}`,
             {

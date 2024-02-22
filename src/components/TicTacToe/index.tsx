@@ -4,25 +4,26 @@ import {Button} from "@mui/material";
 import {useSelector} from "react-redux";
 import {RootState} from "../../store";
 import {GameOfType, ITicTacToeState} from "../../api_client/type";
-import api_client from "../../api_client";
+import api from "../../api_client";
 
 const TicTacToe = (props: { game: GameOfType<ITicTacToeState> }) => {
     const {theme} = useSelector((state: RootState) => state.Task7Store);
 
     const [game, setGame] = useState(props.game);
     const [grid, setGrid] = useState(props.game.state.grid);
+    const timer = useRef<NodeJS.Timer | null>(null);
+
     const isYourTurn = (game.turn === 1 && localStorage.userId === game.player1?.id) ||
         (game.turn === 2 && localStorage.userId === game.player2?.id);
 
-    const timer = useRef<NodeJS.Timer | null>(null);
     async function handleNextMove(move: number, nextGrid: string[]) {
         setGrid(nextGrid);
-        await api_client.makeMove(game.id, localStorage.userId, move);
+        await api.makeMove(game.id, localStorage.userId, move);
     }
 
     useEffect(() => {
         timer.current ??= setInterval(async () => {
-            const response = await api_client.getGame(game.id);
+            const response = await api.getGame(game.id);
             setGrid(response.data.state.grid);
             setGame(response.data);}, 1000);
     }, []);
@@ -45,8 +46,8 @@ const TicTacToe = (props: { game: GameOfType<ITicTacToeState> }) => {
                             color: theme ==='dark' ? "rgba(255,255,255,0.25)" : ''
                         }
                     }} variant="outlined" onClick={async () => {
-                await api_client.restartGame(game.id, localStorage.userId);
-                const response = await api_client.getGame(game.id);
+                await api.restartGame(game.id, localStorage.userId);
+                const response = await api.getGame(game.id);
                 setGame(response.data);
             }}
             > {game.winner

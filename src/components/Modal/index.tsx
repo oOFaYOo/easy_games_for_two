@@ -4,8 +4,11 @@ import {IModal} from "./type";
 import {useSelector} from "react-redux";
 import {RootState} from "../../store";
 
-const Modal = ({text, buttonText, action, modalValue, setModalValue, closeFromOutside, type = 'textField', selectorProps}: IModal) => {
+const Modal = (
+    {text, buttonText, action, modalValue, setModalValue, closeFromOutside, type = 'textField', selectorProps}: IModal) => {
+
     const {theme} = useSelector((state: RootState) => state.Task7Store);
+
     return (
         <div className={'absolute w-full h-full bg-black/70 z-10 flex justify-center items-center'} onClick={() => {
             if (closeFromOutside) {
