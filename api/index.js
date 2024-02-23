@@ -49,7 +49,7 @@ function applyTicTacToeMove(grid, newMove, turn, player1Name, player2Name) {
         throw new Error();
     grid[newMove] = turn === 1 ? 'X' : 'O';
     let winner = calculateWinner();
-    winner = winner && winner !== "Draw" ? turn === 1 ? player1Name : player2Name : '';
+    winner = (winner && winner !== "Draw") ? (turn === 1 ? player1Name : player2Name) : null;
     return {
         newState: {grid: grid},
         winner: winner,
@@ -73,7 +73,8 @@ function applyTicTacToeMove(grid, newMove, turn, player1Name, player2Name) {
                 return grid[a];
             }
         }
-        return grid.filter(a => !a).length ? null : "Draw";
+
+        return grid.every(i => i !== null) ? "Draw" : null;
     }
 }
 
