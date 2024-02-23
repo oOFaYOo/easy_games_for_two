@@ -10,20 +10,17 @@ const Games = ({update, setUpdate}:GamesType) => {
     const [data, setData] = useState<AllGamesType | null>(null);
 
     useEffect(() => {
-        (
+            setInterval(
             async () => {
                 if (!data || update) {
                     const response = await api.getGames();
-                    if (response.status === 200) {
+                    if (response.status === 200)
                         setData(response.data);
-                        setUpdate(false);
-                    } else {
-                        console.log(`Error ${response.status}`)
-                    }
+                    else
+                        console.error(`Error ${response.status}`);
                 }
-            }
-        )()
-    }, [update])
+            }, 1000);
+    }, [])
 
     return (
         <div className={'w-full flex flex-col grow justify-center items-center'}>
