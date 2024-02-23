@@ -19,6 +19,9 @@ const TicTacToe = (props: { game: GameOfType<ITicTacToeState> }) => {
     async function handleNextMove(move: number, nextGrid: string[]) {
         setGrid(nextGrid);
         await api.makeMove(game.id, localStorage.userId, move);
+        const response = await api.getGame(game.id);
+        setGrid(response.data.state.grid);
+        setGame(response.data);
     }
 
     useEffect(() => {
