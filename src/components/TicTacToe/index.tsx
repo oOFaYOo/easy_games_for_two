@@ -22,11 +22,17 @@ const TicTacToe = (props: { game: GameOfType<ITicTacToeState> }) => {
     }
 
     useEffect(() => {
-        timer.current ??= setInterval(async () => {
-            const response = await api.getGame(game.id);
-            setGrid(response.data.state.grid);
-            setGame(response.data);}, 1000);
-    }, []);
+        if (!isYourTurn)
+            timer.current ??= setInterval(async () => {
+                const response = await api.getGame(game.id);
+                setGrid(response.data.state.grid);
+                setGame(response.data);}, 1000);
+        else if (timer.current)
+        {
+            clearInterval(timer.current);
+            timer.current = null;
+        }
+    });
 
     return (
         <div className={'flex flex-col items-center text-white'}>
