@@ -17,7 +17,7 @@ const RockPaperScissors = (props: { game: GameOfType<IRockPaperScissorsState> })
 
     const actions = [
         {
-            name: 'stone',
+            name: 'rock',
             img: StoneImage,
         },
         {
