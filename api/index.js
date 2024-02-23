@@ -48,7 +48,8 @@ function applyTicTacToeMove(grid, newMove, turn, player1Name, player2Name) {
     if (grid[newMove])
         throw new Error();
     grid[newMove] = turn === 1 ? 'X' : 'O';
-    const winner = calculateWinner() ? turn === 1 ? player1Name : player2Name : '';
+    let winner = calculateWinner();
+    winner = winner && winner !== "Draw" ? turn === 1 ? player1Name : player2Name : '';
     return {
         newState: {grid: grid},
         winner: winner,
