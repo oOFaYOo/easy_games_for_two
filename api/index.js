@@ -72,7 +72,7 @@ function applyTicTacToeMove(grid, newMove, turn, player1Name, player2Name) {
                 return grid[a];
             }
         }
-        return null;
+        return grid.filter(a => !a).length ? null : "Draw";
     }
 }
 
