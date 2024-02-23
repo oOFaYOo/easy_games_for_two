@@ -25,6 +25,7 @@ function App() {
                           localStorage.userName = userName;
                           localStorage.userId = btoa(userName+Date.now())
                           setOpenModal(false);
+                          setUpdate(true);
                       }
                   }}/>
                   : null
